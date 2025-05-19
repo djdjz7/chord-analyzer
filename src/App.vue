@@ -223,9 +223,9 @@ const chordName = computed(() => {
     if (d1 === 3) numeralsList = romanNumeralsLower
     else if (d1 === 4) numeralsList = romanNumeralsUpper
   }
-  const root = activeNotes[0][0] % 7
+  const root = activeNotes[0][0]
   const ksRoot = toneMap[keySignature.value[0] as keyof typeof toneMap]
-  const rootDelta = root - ksRoot + 1
+  const rootDelta = ((((root - ksRoot) % 7) + 7) % 7) + 1
   return [
     `<span>${numeralsList![rootDelta - 1]}</span><sup>${marker}</sup>`,
     [type, inversion, rootDelta].join(' '),
