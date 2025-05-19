@@ -120,7 +120,7 @@ const chordName = computed(() => {
     },
   )
   if (activeNotes.length !== 3 && activeNotes.length !== 4) {
-    return ['无效', '']
+    return ['无效', '请重试']
   }
   let inversion = ''
   let type = ''
@@ -150,7 +150,7 @@ const chordName = computed(() => {
       activeNotes[0][1] += 12
       activeNotes.sort((a, b) => a[0] - b[0])
     } else {
-      return ['无效', '']
+      return ['无效', '请重试']
     }
     const d1 = activeNotes[1][1] - activeNotes[0][1]
     const d2 = activeNotes[2][1] - activeNotes[1][1]
@@ -171,7 +171,7 @@ const chordName = computed(() => {
         marker = '+'
         break
       default:
-        return ['无效', '']
+        return ['无效', '请重试']
     }
     if (d1 === 3) numeralsList = romanNumeralsLower
     else if (d1 === 4) numeralsList = romanNumeralsUpper
@@ -197,14 +197,14 @@ const chordName = computed(() => {
       activeNotes[0][1] += 12
       activeNotes.sort((a, b) => a[0] - b[0])
     } else {
-      return ['无效', '']
+      return ['无效', '请重试']
     }
     const d1 = activeNotes[1][1] - activeNotes[0][1]
     const d2 = activeNotes[2][1] - activeNotes[1][1]
     const d3 = activeNotes[3][1] - activeNotes[0][1]
     const triadType = getChordType3([d1, d2])
     if (!triadType) {
-      return ['无效', '']
+      return ['无效', '请重试']
     }
     if (triadType === 'diminished') {
       marker = 'o'
@@ -213,11 +213,11 @@ const chordName = computed(() => {
     }
     const seventhType = getSeventhType(d3)
     if (!seventhType) {
-      return ['无效', '']
+      return ['无效', '请重试']
     }
     const chordType = getChordType7(triadType, seventhType)
     if (chordType === undefined) {
-      return ['无效', '']
+      return ['无效', '请重试']
     }
     type = chordType
     if (d1 === 3) numeralsList = romanNumeralsLower
@@ -241,7 +241,9 @@ watchEffect(() => {
     )
     .join(' ')
   const notation = `K:${keySignature.value}\nL:1/4\n|[${notationInner}]|`
-  renderAbc(renderElement.value, notation)
+  renderAbc(renderElement.value, notation, {
+    staffwidth: 500,
+  })
 })
 
 watchEffect(() => {
@@ -253,7 +255,9 @@ watchEffect(() => {
     )
     .join(' ')
   const notation = `K:${keySignature.value}\nL:1/4\n|[${notationInner}]|`
-  renderAbc(renderMergedElement.value, notation)
+  renderAbc(renderMergedElement.value, notation, {
+    staffwidth: 300,
+  })
 })
 </script>
 
@@ -263,24 +267,36 @@ watchEffect(() => {
     min-h-screen
     p-12
     box-border
-    flex="~ col items-center justify-center">
-    <select v-model="keySignature">
-      <option v-for="key in Object.keys(keySignatures)" :key="key" :value="key">
-        {{ key }}
-      </option>
-    </select>
-    <table>
-      <tr>
-        <td>Raw Input</td>
-        <td><span ref="render"></span></td>
-      </tr>
-      <tr>
-        <td>Merged Input</td>
-        <td><span ref="render-merged"></span></td>
-      </tr>
-    </table>
-    <div class="text-4xl" v-html="chordName[0]"></div>
-    <div class="text-gray">{{ chordName[1] }}</div>
-    <KeyBoard v-model="keyboardStatus" class="m-t-4" />
+    flex="~ col items-center gap-12">
+    <div text-center>
+      <div class="text-4xl" v-html="chordName[0]"></div>
+      <div class="text-gray" h-1em>{{ chordName[1] }}</div>
+    </div>
+
+    <div flex="~ items-center gap-12">
+      <KeyBoard v-model="keyboardStatus" class="m-t-4" />
+      <div flex="~ col items-center justify-center">
+        <select v-model="keySignature">
+          <option
+            v-for="key in Object.keys(keySignatures)"
+            :key="key"
+            :value="key">
+            {{ key }}
+          </option>
+        </select>
+        <table>
+          <tbody>
+            <tr>
+              <td>Raw Input</td>
+              <td><span ref="render"></span></td>
+            </tr>
+            <tr>
+              <td>Merged Input</td>
+              <td><span ref="render-merged"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
