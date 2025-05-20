@@ -46,8 +46,7 @@ const prev = () => {
         v-if="line"
         absolute
         h-2px
-        class="top-[calc(50%_-_1px)]"
-        bg-black
+        class="top-[calc(50%_-_1px)] bg-[var(--foreground)]"
         :class="[short ? 'w-33%' : 'w-full']"></div>
       <span absolute select-none text-lg>{{ displaySymbol }}</span>
     </div>

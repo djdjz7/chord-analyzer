@@ -286,14 +286,18 @@ watchEffect(() => {
       <div flex="~ col 1" max-w-200>
         <div grid="~ rows-[auto_auto_auto] cols-[auto_1fr] gap-2">
           <div flex="~ items-center justify-end">调式</div>
-          <select w-min v-model="keySignature" m-l-4>
-          <option
-            v-for="key in Object.keys(keySignatures)"
-            :key="key"
-            :value="key">
-            {{ key }}
-          </option>
-        </select>
+          <select
+            w-min
+            v-model="keySignature"
+            m-l-4
+            class="bg-[var(--background)] color-[var(--foreground)]">
+            <option
+              v-for="key in Object.keys(keySignatures)"
+              :key="key"
+              :value="key">
+              {{ key }}
+            </option>
+          </select>
           <div flex="~ items-center justify-end">原始输入</div>
           <div><span ref="render"></span></div>
           <div flex="~ items-center justify-end">调式合并</div>
@@ -301,5 +305,37 @@ watchEffect(() => {
         </div>
       </div>
     </div>
+
+    <a
+      href="https://github.com/djdjz7/chord-analyzer"
+      target="_blank"
+      opacity-70
+      m-t-4
+      class="group underline-[var(--foreground)] underline-offset-2"
+      flex="~ col items-center">
+      <img block h-6 w-6 object-fit alt="Github Icon" class="github-icon" />
+      <span
+        class="text-[var(--foreground)] -translate-y-4"
+        opacity-0
+        group-hover:translate-y-0
+        group-hover:opacity-100
+        transition-all
+        duration-300ms
+        text-sm>
+        Source
+      </span>
+    </a>
   </div>
 </template>
+
+<style lang="css" scoped>
+.github-icon {
+  content: url(./assets/github-mark.svg);
+}
+
+@media (prefers-color-scheme: dark) {
+  .github-icon {
+    content: url(./assets/github-mark-white.svg);
+  }
+}
+</style>
