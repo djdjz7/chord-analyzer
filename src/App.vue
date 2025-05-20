@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef, watchEffect } from 'vue'
-import { renderAbc } from 'abcjs'
+import { renderAbc, type AbcVisualParams } from 'abcjs'
 import KeyBoard from './components/KeyBoard.vue'
 import {
   keySignatures,
@@ -19,6 +19,12 @@ const keyboardStatus = ref<{ [x: string]: PressedKeyState }>({})
 const renderElement = useTemplateRef('render')
 const renderMergedElement = useTemplateRef('render-merged')
 const keySignature = ref<KeySignature>('C')
+
+const renderOptions: AbcVisualParams = {
+  responsive: 'resize',
+  viewportHorizontal: true,
+  scrollHorizontal: true,
+}
 
 const mergeNotes = (
   ks: KeySignature,
@@ -125,7 +131,7 @@ const chordName = computed(() => {
   let inversion = ''
   let type = ''
   let numeralsList = undefined
-  let marker = ''
+  let marker = undefined
   activeNotes.sort((a, b) => a[0] - b[0])
   if (activeNotes.length === 3) {
     if (
@@ -227,7 +233,9 @@ const chordName = computed(() => {
   const ksRoot = toneMap[keySignature.value[0] as keyof typeof toneMap]
   const rootDelta = ((((root - ksRoot) % 7) + 7) % 7) + 1
   return [
-    `<span>${numeralsList![rootDelta - 1]}</span><sup>${marker}</sup>`,
+    marker
+      ? `<span>${numeralsList![rootDelta - 1]}</span><sup>${marker}</sup>`
+      : `<span>${numeralsList![rootDelta - 1]}</span>`,
     [type, inversion, rootDelta].join(' '),
   ]
 })
@@ -241,9 +249,7 @@ watchEffect(() => {
     )
     .join(' ')
   const notation = `K:${keySignature.value}\nL:1/4\n|[${notationInner}]|`
-  renderAbc(renderElement.value, notation, {
-    staffwidth: 500,
-  })
+  renderAbc(renderElement.value, notation, renderOptions)
 })
 
 watchEffect(() => {
@@ -255,9 +261,7 @@ watchEffect(() => {
     )
     .join(' ')
   const notation = `K:${keySignature.value}\nL:1/4\n|[${notationInner}]|`
-  renderAbc(renderMergedElement.value, notation, {
-    staffwidth: 300,
-  })
+  renderAbc(renderMergedElement.value, notation, renderOptions)
 })
 </script>
 
@@ -268,15 +272,21 @@ watchEffect(() => {
     p-12
     box-border
     flex="~ col items-center gap-12">
-    <div text-center>
+    <div text-center h-24 flex="~ col items-center justify-center">
       <div class="text-4xl" v-html="chordName[0]"></div>
       <div class="text-gray" h-1em>{{ chordName[1] }}</div>
     </div>
 
-    <div flex="~ items-center gap-12">
+    <div
+      box-border
+      flex="~ col md:row md:items-center justify-center gap-12"
+      w-screen
+      px-12>
       <KeyBoard v-model="keyboardStatus" class="m-t-4" />
-      <div flex="~ col items-center justify-center">
-        <select v-model="keySignature">
+      <div flex="~ col 1" max-w-200>
+        <div grid="~ rows-[auto_auto_auto] cols-[auto_1fr] gap-2">
+          <div flex="~ items-center justify-end">调式</div>
+          <select w-min v-model="keySignature" m-l-4>
           <option
             v-for="key in Object.keys(keySignatures)"
             :key="key"
@@ -284,18 +294,11 @@ watchEffect(() => {
             {{ key }}
           </option>
         </select>
-        <table>
-          <tbody>
-            <tr>
-              <td>Raw Input</td>
-              <td><span ref="render"></span></td>
-            </tr>
-            <tr>
-              <td>Merged Input</td>
-              <td><span ref="render-merged"></span></td>
-            </tr>
-          </tbody>
-        </table>
+          <div flex="~ items-center justify-end">原始输入</div>
+          <div><span ref="render"></span></div>
+          <div flex="~ items-center justify-end">调式合并</div>
+          <div><span ref="render-merged"></span></div>
+        </div>
       </div>
     </div>
   </div>
