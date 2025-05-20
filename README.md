@@ -1,39 +1,11 @@
-# chord-analyzer
+# 全手动戳戳戳式和弦分析器
 
-This template should help get you started developing with Vue 3 in Vite.
+给音数大作业写的，至于对不对我也不知道。
 
-## Recommended IDE Setup
+应该是对的，应该吧，应该。。。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+是的你甚至可以选择调式！
 
-## Type Support for `.vue` Imports in TS
+左键戳戳五线谱可以在一堆符号里面循环，右键是反着循环。
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-bun install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-bun dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-bun run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-bun lint
-```
+你是手机？哦那你慢慢戳吧。
