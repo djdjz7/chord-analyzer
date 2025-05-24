@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef, watchEffect } from 'vue'
-import { renderAbc, type AbcVisualParams } from 'abcjs'
+import { renderAbc, type AbcVisualParams, synth } from 'abcjs'
 import KeyBoard from './components/KeyBoard.vue'
 import {
   keySignatures,
@@ -18,6 +18,7 @@ import {
 const keyboardStatus = ref<{ [x: string]: PressedKeyState }>({})
 const renderElement = useTemplateRef('render')
 const renderMergedElement = useTemplateRef('render-merged')
+const playerElement = useTemplateRef('player')
 const keySignature = ref<KeySignature>('C')
 
 const renderOptions: AbcVisualParams = {
@@ -261,7 +262,11 @@ watchEffect(() => {
     )
     .join(' ')
   const notation = `K:${keySignature.value}\nL:1/4\n|[${notationInner}]|`
-  renderAbc(renderMergedElement.value, notation, renderOptions)
+  const visuals = renderAbc(renderMergedElement.value, notation, renderOptions)
+  if (!playerElement.value) return
+  const synthControl = new synth.SynthController()
+  synthControl.load(playerElement.value)
+  synthControl.setTune(visuals[0], true)
 })
 </script>
 
@@ -299,9 +304,11 @@ watchEffect(() => {
             </option>
           </select>
           <div flex="~ items-center justify-end">原始输入</div>
-          <div><span ref="render"></span></div>
+          <div ref="render"></div>
           <div flex="~ items-center justify-end">调式合并</div>
-          <div><span ref="render-merged"></span></div>
+          <div ref="render-merged"></div>
+          <div flex="~ items-center justify-end">播放器</div>
+          <div ref="player" m-l-2></div>
         </div>
       </div>
     </div>
