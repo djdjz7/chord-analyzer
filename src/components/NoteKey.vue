@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { keyStates, symbols, type KeyState } from '@/data'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 defineProps<{
   line: boolean
@@ -14,7 +14,14 @@ const model = defineModel<{
     state: 'up',
   }),
 })
-const cycleIndex = ref(0)
+const cycleIndex = computed({
+  get() {
+    return keyStates.findIndex((state) => state === model.value.state)
+  },
+  set(value) {
+    model.value.state = keyStates[value]
+  },
+})
 const displaySymbol = computed(() => {
   return symbols[cycleIndex.value]
 })

@@ -93,5 +93,6 @@ watchEffect(() => {
       :short="key.short"
       :symbol="key.val"
       v-model="fullStatus[key.val as keyof typeof fullStatus]" />
+    <button m-t-4 @click="fullStatus = statusFactory()">重置</button>
   </div>
 </template>
